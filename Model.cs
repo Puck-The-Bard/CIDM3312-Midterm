@@ -87,5 +87,10 @@ namespace ShopList
         public Product Product {get; set;} //nav property
         
         public int Quantity {get; set;}
+
+        public override string ToString()
+        {
+            return$"    {Quantity}";
+        }
     }
 }

@@ -157,8 +157,8 @@ namespace ShopList
                             ListProducts();
                             break;
                         case 2:
-                        //list all products in cart
-                        
+                            //list all products in cart
+                            ListCart();
                             break;
                         case 3:
                         //Add product to cart
@@ -197,6 +197,24 @@ namespace ShopList
 
                 MenuSelection();
             }   
+        }
+
+
+        //Lists all items in users cart
+        static void ListCart()
+        {
+            using(var db = new ShopDbContext())
+            {
+                foreach(var d in db.CxCart.Where(c => c.CartID == Globals.CxLogedIn.Cart.CartID)) //list all items in cart
+                {
+                    Console.WriteLine("Quantity: " + d);
+                    foreach(var p in db.Products.Where(x => x.ProductID == d.ProductID))
+                    {
+                        Console.WriteLine(p);
+                    }
+                    
+                }
+            }    
         }
 
         //adds product to users cart
