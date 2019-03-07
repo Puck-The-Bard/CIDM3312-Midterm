@@ -4609,7 +4609,7 @@
     ".NETCoreApp,Version=v2.2": [
       "Microsoft.EntityFrameworkcore.sqlite >= 2.2.2",
       "Microsoft.NETCore.App >= 2.2.0",
-      "microsoft.EntityFrameworkCore.Design"
+      "microsoft.EntityFrameworkCore.Design >= 2.2.2"
     ]
   },
   "packageFolders": {
@@ -4665,7 +4665,7 @@
           },
           "microsoft.EntityFrameworkCore.Design": {
             "target": "Package",
-            "version": "(, )"
+            "version": "[2.2.2, )"
           }
         },
         "imports": [

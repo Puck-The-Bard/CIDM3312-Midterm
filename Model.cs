@@ -9,7 +9,13 @@ namespace ShopList
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data source = MovieDb.db");
+            optionsBuilder.UseSqlite("Data source = ShopDb.db");
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder) //creates composit key
+        {
+            modelBuilder.Entity<CxCart>()
+                .HasKey(e => new {e.CartID, e.CustomerID});
         }
         public DbSet<Customer> Customers {get; set;}
 
@@ -22,32 +28,48 @@ namespace ShopList
 
     public class Customer
     {
-        public int CustoemrID {get; set;}
+        public int CustomerID {get; set;} //pk
 
-        public string CxFirstName {get; set;}
+        public string FirstName {get; set;}
 
-        public string CxLastName {get; set;}
+        public string LastName {get; set;}
 
-        public string CxEmail {get; set;}
+        public string Email {get; set;}
+
+        public List<CxCart> CxCart {get; set;} //nav property
     }
 
     public class Cart
     {
-        public int CartID {get; set;}
+        public int CartID {get; set;} //pk
 
-        public CxCart CxCart {get; set;}
+        public List<CxCart> CxCart {get; set;}
+
     }
 
     public class Product
     {
-        public int ProductID {get; set;}
+        public int ProductID {get; set;} //pk
 
-        public CxCart CxCart {get; set;}
+        public string Description {get; set;}
+
+        public decimal Price {get; set;}
+
     }
 
     public class CxCart
     {
+        public int CartID {get; set;} // composit key
 
+        public int CustomerID {get; set;} // composit key
+
+        public Customer Customer {get; set;} // nav property
+
+        public Cart Cart {get; set;} //nav property
+
+        public List<Product> Products {get; set;}
+
+        public List<int> ProdQuant {get; set;} //quantity of products in cart
         
     }
 }

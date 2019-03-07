@@ -1,0 +1,11 @@
+C:\Users\zmcgu\Documents\2019_ClassesWT_Sem1\AdvBusApps\Midterm\bin\Debug\netcoreapp2.2\Midterm.deps.json
+C:\Users\zmcgu\Documents\2019_ClassesWT_Sem1\AdvBusApps\Midterm\bin\Debug\netcoreapp2.2\Midterm.runtimeconfig.json
+C:\Users\zmcgu\Documents\2019_ClassesWT_Sem1\AdvBusApps\Midterm\bin\Debug\netcoreapp2.2\Midterm.runtimeconfig.dev.json
+C:\Users\zmcgu\Documents\2019_ClassesWT_Sem1\AdvBusApps\Midterm\bin\Debug\netcoreapp2.2\Midterm.dll
+C:\Users\zmcgu\Documents\2019_ClassesWT_Sem1\AdvBusApps\Midterm\bin\Debug\netcoreapp2.2\Midterm.pdb
+C:\Users\zmcgu\Documents\2019_ClassesWT_Sem1\AdvBusApps\Midterm\obj\Debug\netcoreapp2.2\Midterm.csprojAssemblyReference.cache
+C:\Users\zmcgu\Documents\2019_ClassesWT_Sem1\AdvBusApps\Midterm\obj\Debug\netcoreapp2.2\Midterm.csproj.CoreCompileInputs.cache
+C:\Users\zmcgu\Documents\2019_ClassesWT_Sem1\AdvBusApps\Midterm\obj\Debug\netcoreapp2.2\Midterm.AssemblyInfoInputs.cache
+C:\Users\zmcgu\Documents\2019_ClassesWT_Sem1\AdvBusApps\Midterm\obj\Debug\netcoreapp2.2\Midterm.AssemblyInfo.cs
+C:\Users\zmcgu\Documents\2019_ClassesWT_Sem1\AdvBusApps\Midterm\obj\Debug\netcoreapp2.2\Midterm.dll
+C:\Users\zmcgu\Documents\2019_ClassesWT_Sem1\AdvBusApps\Midterm\obj\Debug\netcoreapp2.2\Midterm.pdb
