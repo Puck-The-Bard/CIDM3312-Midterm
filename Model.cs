@@ -77,7 +77,6 @@ namespace ShopList
         public Cart Cart {get; set;} //nav property
 
         public List<Product> Products {get; set;}
-
         
     }
 }

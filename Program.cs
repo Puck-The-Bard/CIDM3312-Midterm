@@ -119,7 +119,7 @@ namespace ShopList
 
                 using(var db = new ShopDbContext())
                     {
-                        Customer NewCustomer = new Customer{Email = UsrEmail, FirstName = FName, LastName = LName};
+                        Customer NewCustomer = new Customer{Email = UsrEmail, FirstName = FName, LastName = LName, Cart = new Cart()};
                         
                         db.Add(NewCustomer);
                         db.SaveChanges();
