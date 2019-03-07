@@ -21,7 +21,7 @@ namespace ShopList
 
         public DbSet<Cart> Carts{get; set;}
 
-        public DbSet<Product> Product {get; set;}
+        public DbSet<Product> Products {get; set;}
 
         public DbSet<CxCart> CxCart {get; set;}
     }
@@ -37,13 +37,16 @@ namespace ShopList
         public string Email {get; set;}
 
         public List<CxCart> CxCart {get; set;} //nav property
+
+        public Cart Cart {get; set;}
+
     }
 
     public class Cart
     {
         public int CartID {get; set;} //pk
 
-        public List<CxCart> CxCart {get; set;}
+        public List<CxCart> CxCart {get; set;} // nav property
 
     }
 
@@ -54,6 +57,12 @@ namespace ShopList
         public string Description {get; set;}
 
         public decimal Price {get; set;}
+
+         public override string ToString()
+        {
+            return$"{ProductID}    -   {Description}   -   ${Price}";
+        }
+        
 
     }
 
@@ -69,7 +78,6 @@ namespace ShopList
 
         public List<Product> Products {get; set;}
 
-        public List<int> ProdQuant {get; set;} //quantity of products in cart
         
     }
 }

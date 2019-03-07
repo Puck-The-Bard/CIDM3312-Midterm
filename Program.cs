@@ -12,7 +12,7 @@ namespace ShopList
             //============================Ensure Database is created==============================
             using (var db = new ShopDbContext())
             {
-                db.Database.EnsureDeleted(); // for testing
+               db.Database.EnsureDeleted(); // for testing
 
                 db.Database.EnsureCreated();
          
@@ -45,12 +45,14 @@ namespace ShopList
 
 
             string UsrEmail = "null";
+            Console.WriteLine("Please Login with your eamil:"); //prompt user for email
+            UsrEmail = Console.ReadLine(); //save email
 
             //checking if they are there and prompting them accordingly
             if(IsUserHere(UsrEmail)) //If the user is in the system prompt them with a menu and execute proper functions
             {
 
-                Console.WriteLine("welcome to the answer hub" + "\n");
+                Console.WriteLine("\n\nWelcome to the Super Mega Ultra Store 9000" + "\n");
 
                 MenuSelection();
             }
@@ -92,7 +94,7 @@ namespace ShopList
                 try //finding out if the user is in there or not
                 {
                 Customer FindUser = db.Customers.Where(p => p.Email == UsrName).First();
-                Console.WriteLine(FindUser);
+                //Console.WriteLine(FindUser);
                     return true;
                 }
                 catch //if it isn't an error is thrown and the return is false
@@ -143,8 +145,10 @@ namespace ShopList
             switch(UsrIn)
                 {
                     case 1:
-                        //list all products
-                            
+                            Console.Clear();
+                            Console.WriteLine("\n\n\n==================================\n\n");
+                            //list all products
+                            ListProducts();
                             break;
                         case 2:
                         //list all products in cart
@@ -171,6 +175,20 @@ namespace ShopList
                 Console.WriteLine("\n----------------PLEASE PICK A NUMBER----------------");
                 MenuSelection();
             }
+        }
+
+        static void ListProducts() 
+        {
+          using (var db = new ShopDbContext())
+            {
+                
+                foreach(var Q in db.Products)
+                {
+                    Console.WriteLine(Q + "\n");
+                }
+
+                MenuSelection();
+            }   
         }
     }
 }
