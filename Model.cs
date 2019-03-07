@@ -15,7 +15,7 @@ namespace ShopList
         protected override void OnModelCreating(ModelBuilder modelBuilder) //creates composit key
         {
             modelBuilder.Entity<CxCart>()
-                .HasKey(e => new {e.CartID, e.CustomerID});
+                .HasKey(e => new {e.CartID, e.ProductID});
         }
         public DbSet<Customer> Customers {get; set;}
 
@@ -36,9 +36,12 @@ namespace ShopList
 
         public string Email {get; set;}
 
-        public List<CxCart> CxCart {get; set;} //nav property
+        public Cart Cart {get; set;} // nav property
 
-        public Cart Cart {get; set;}
+        public override string ToString()
+        {
+            return$"{CustomerID} {FirstName} {LastName} {Email} {Cart}";
+        }
 
     }
 
@@ -46,7 +49,12 @@ namespace ShopList
     {
         public int CartID {get; set;} //pk
 
-        public List<CxCart> CxCart {get; set;} // nav property
+        public List<CxCart> productLink{get; set;}
+
+        public override string ToString()
+        {
+            return$"Cart ID: {CartID}";
+        }
 
     }
 
@@ -57,6 +65,8 @@ namespace ShopList
         public string Description {get; set;}
 
         public decimal Price {get; set;}
+
+        public List<CxCart> productLink{get; set;}
 
          public override string ToString()
         {
@@ -70,13 +80,12 @@ namespace ShopList
     {
         public int CartID {get; set;} // composit key
 
-        public int CustomerID {get; set;} // composit key
-
-        public Customer Customer {get; set;} // nav property
+        public int ProductID {get; set;} // composit key
 
         public Cart Cart {get; set;} //nav property
 
-        public List<Product> Products {get; set;}
+        public Product Product {get; set;} //nav property
         
+        public int Quantity {get; set;}
     }
 }

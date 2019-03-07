@@ -5,6 +5,12 @@ using System.Linq;
 
 namespace ShopList
 {
+
+    //GLOBAL VARIABLES
+    static class Globals
+    {
+        public static Customer CxLogedIn;
+    }
     class Program
     {
         static void Main(string[] args)
@@ -34,11 +40,7 @@ namespace ShopList
                 new Product { Description = "Kingdom Hearts III (Platform: PlayStation 4)", Price = 59.99M }
                 };
 
-                foreach(var p in products) //this is the only way it will let me add the list to the database for some reason
-                {            
-                    db.Add(p);
-                }
-
+                db.AddRange(products);
 
                 db.SaveChanges();
             }
@@ -52,8 +54,8 @@ namespace ShopList
             if(IsUserHere(UsrEmail)) //If the user is in the system prompt them with a menu and execute proper functions
             {
 
-                Console.WriteLine("\n\nWelcome to the Super Mega Ultra Store 9000" + "\n");
-
+                Console.WriteLine("\n\nWelcome to the Super Mega Ultra Store 9000" + "\n"); 
+                
                 MenuSelection();
             }
             else //if the user doesn't exist ask them if they want to make a new account and if they don't exit them from the app
@@ -93,11 +95,15 @@ namespace ShopList
             {
                 try //finding out if the user is in there or not
                 {
-                Customer FindUser = db.Customers.Where(p => p.Email == UsrName).First();
-                //Console.WriteLine(FindUser);
+                    Customer FindUser = db.Customers.Where(p => p.Email == UsrName).First();
+                    
+                    Globals.CxLogedIn = FindUser;
+
+                    Console.WriteLine($"\n\nWelcome Back " + Globals.CxLogedIn.FirstName);
+
                     return true;
                 }
-                catch //if it isn't an error is thrown and the return is false
+                catch //if an error is thrown then the return is false
                 {
                     return false;
                 }
@@ -117,10 +123,10 @@ namespace ShopList
                 Console.WriteLine("Please Enter Your Last Name");
                 LName = Console.ReadLine();
 
-                using(var db = new ShopDbContext())
+                using(var db = new ShopDbContext())  //adding customer to database
                     {
                         Customer NewCustomer = new Customer{Email = UsrEmail, FirstName = FName, LastName = LName, Cart = new Cart()};
-                        
+                        Globals.CxLogedIn = NewCustomer;
                         db.Add(NewCustomer);
                         db.SaveChanges();
                     }
@@ -156,6 +162,7 @@ namespace ShopList
                             break;
                         case 3:
                         //Add product to cart
+                            AddToCart();
                          
                             break;
                         case 4:
@@ -177,6 +184,7 @@ namespace ShopList
             }
         }
 
+        //lists all products available
         static void ListProducts() 
         {
           using (var db = new ShopDbContext())
@@ -189,6 +197,39 @@ namespace ShopList
 
                 MenuSelection();
             }   
+        }
+
+        //adds product to users cart
+        static void AddToCart()
+        {
+            int ProductToAdd = 0;
+                try{
+                    Console.WriteLine("Which product would you like to add? (please specify product ID)");
+                    ProductToAdd = Convert.ToInt32(Console.ReadLine()); //has user select a product
+                    
+                    Console.WriteLine("How many would you like?");
+                    int QuantityToAdd = Convert.ToInt32(Console.ReadLine()); //asks user how many they would like to add
+
+                    using (var db = new ShopDbContext()) //inputs data into database
+                        {
+                            var StuffToAdd = db.Products.Where(i => i.ProductID == ProductToAdd).First();
+                            Console.WriteLine(StuffToAdd);
+                            Console.WriteLine(Globals.CxLogedIn);
+                            CxCart NewProduct = new CxCart{CartID = Globals.CxLogedIn.Cart.CartID, ProductID = StuffToAdd.ProductID, Quantity = QuantityToAdd};
+
+                            db.Add(NewProduct);
+                            db.SaveChanges();
+
+                            MenuSelection();
+                        }
+                    
+                }
+
+                 catch{
+                    Console.WriteLine("sorry that is not a valid product, please try again");
+                    AddToCart();
+                }
+            
         }
     }
 }
