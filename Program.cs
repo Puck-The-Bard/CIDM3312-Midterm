@@ -207,10 +207,10 @@ namespace ShopList
             {
                 foreach(var d in db.CxCart.Where(c => c.CartID == Globals.CxLogedIn.Cart.CartID)) //list all items in cart
                 {
-                    Console.WriteLine("Quantity: " + d);
+                    Console.Write("\tQuantity: " + d + "\t - ");
                     foreach(var p in db.Products.Where(x => x.ProductID == d.ProductID))
                     {
-                        Console.WriteLine(p);
+                        Console.WriteLine(p.Description + "  " + p.Price);
                     }
                     
                 }
