@@ -90,7 +90,7 @@ namespace ShopList
 
         public override string ToString()
         {
-            return$"    {Quantity}";
+            return$" {Quantity}";
         }
     }
 }

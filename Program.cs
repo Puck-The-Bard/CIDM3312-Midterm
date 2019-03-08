@@ -88,7 +88,8 @@ namespace ShopList
         //==========================================METHODS========================================
 
 
-        static bool IsUserHere(string UsrName) //checking to see if user is in the database
+        //-----------------------------------------------checking to see if user is in the database
+        static bool IsUserHere(string UsrName) 
         {
 
             using (var db = new ShopDbContext())
@@ -115,7 +116,8 @@ namespace ShopList
             }
         }
 
-        static void CreateUsr(string UsrEmail) //creates a new user
+        //---------------------------------------------------creates a new user
+        static void CreateUsr(string UsrEmail) 
         {
             String FName = "First";
             String LName = "Second";
@@ -137,7 +139,8 @@ namespace ShopList
                     }
         }
 
-        static void MenuSelection() //takes user menu selection and executes the proper meethods
+        //-----------------------------------------------takes user menu selection and executes the proper meethods
+        static void MenuSelection() 
         {
             int UsrIn = 0;
 
@@ -172,6 +175,7 @@ namespace ShopList
                         break;
                     case 4:
                         //remove a product from cart
+                        RemoveFromCart();
                         break;
                     case 5:
                         Console.WriteLine("See you next time");
@@ -189,7 +193,7 @@ namespace ShopList
             }
         }
 
-        //lists all products available
+        //-----------------------------------------------lists all products available
         static void ListProducts() 
         {
           using (var db = new ShopDbContext())
@@ -205,7 +209,7 @@ namespace ShopList
         }
 
 
-        //Lists all items in users cart
+        //-----------------------------------------------Lists all items in users cart
         static void ListCart()
         {
             using(var db = new ShopDbContext())
@@ -221,7 +225,7 @@ namespace ShopList
                     Console.Write("\tQuantity: " + d + "\t - ");
                     foreach(var p in db.Products.Where(x => x.ProductID == d.ProductID))
                     {
-                        Console.WriteLine("$" + p.Price * d.Quantity + "  " + p.Description);
+                        Console.WriteLine("$" + p.Price * d.Quantity + " - ID: " + p.ProductID + " - " + p.Description);
                         RunTotal += p.Price*d.Quantity; //keeping a running for items in cart
                     }
                     
@@ -234,6 +238,12 @@ namespace ShopList
                     Console.WriteLine("Grand Total  : " + "$" + RunTotal);
 
                 }
+                else if(RunTotal == 0)
+                {
+                    Console.WriteLine("\nCart Total   : " + "$" + RunTotal);
+                    Console.WriteLine("Shipping Cost: " + "Nothing in Cart yet");
+                    Console.WriteLine("Grand Total  : " + "$" + RunTotal);
+                }
                 else{
                     Console.WriteLine("\nCart Total   : " + "$" + RunTotal);
                     Console.WriteLine("Shipping Cost: " + "$4.99");
@@ -245,7 +255,8 @@ namespace ShopList
             }    
         }
 
-        static bool IsProductInCart(Product TestProduct) //checks to see if a product is in a users cart
+        //-----------------------------------------------checks to see if a product is in a users cart
+        static bool IsProductInCart(Product TestProduct) 
         {
             using (var db = new ShopDbContext())
             {
@@ -253,7 +264,7 @@ namespace ShopList
                 try{ //checks to see if product is in cart, if it isn't it'll throw an exception
                     var d = db.CxCart.Where(c => c.Cart.CartID == Globals.CxLogedIn.Cart.CartID);
                     var e = d.Where(t => t.Product == TestProduct).First();
-                    Console.WriteLine("=>> " + TestProduct.ProductID + "  vs  " + e.ProductID); //for testing.  Sees if it is checking like data and giving proper return
+                    //Console.WriteLine("=>> " + TestProduct.ProductID + "  vs  " + e.ProductID); //for testing.  Sees if it is checking like data and giving proper return
                     return true;
                 }   
                 catch{
@@ -264,7 +275,7 @@ namespace ShopList
 
         }
 
-        //adds product to users cart
+        //-----------------------------------------------adds product to users cart
         static void AddToCart()
         {
             int ProductToAdd = 0;
@@ -301,8 +312,42 @@ namespace ShopList
                   catch{
                     Console.WriteLine("sorry that is not a valid product, please try again");
                     AddToCart();
+                }            
+        }
+
+        //-----------------------------------------------Remove items from cart
+        static void RemoveFromCart()
+        {
+            int ProdIDForRemoval = 0;
+            Console.WriteLine("Which product would you like to remove? (specify product ID in cart)");
+            ProdIDForRemoval = Convert.ToInt32(Console.ReadLine());
+           
+            using( var db = new ShopDbContext())
+            {
+                try
+                {
+                    var ItemForRemoval = db.CxCart.Where(i => i.ProductID == ProdIDForRemoval && Globals.CxLogedIn.Cart.CartID == i.CartID).First();
+                    
+                    if(ItemForRemoval.Quantity > 1)
+                    {
+                        ItemForRemoval.Quantity--;
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        db.Remove(ItemForRemoval);
+                        db.SaveChanges();
+                    }
+                    MenuSelection();
                 }
-            
+                catch
+                {
+                    Console.WriteLine("Item not found in cart");
+                    MenuSelection();
+                }
+            }
+
+
         }
     }
 }
