@@ -213,18 +213,55 @@ namespace ShopList
                 Console.WriteLine("Items Currently in Cart \n");
                 //Console.WriteLine("==========" + Globals.CxLogedIn + "=============="); for error testing
                 //Console.WriteLine("=>>>" + Globals.CxLogedIn.Cart); for error testing
+
+                decimal RunTotal = 0m;
                 foreach(var d in db.CxCart.Where(c => c.Cart.CartID == Globals.CxLogedIn.Cart.CartID)) //list all items in cart
                 {
                     //Console.WriteLine("=>>>>" + d.CartID); for error testing
                     Console.Write("\tQuantity: " + d + "\t - ");
                     foreach(var p in db.Products.Where(x => x.ProductID == d.ProductID))
                     {
-                        Console.WriteLine("$" + p.Price + "  " + p.Description);
+                        Console.WriteLine("$" + p.Price * d.Quantity + "  " + p.Description);
+                        RunTotal += p.Price*d.Quantity; //keeping a running for items in cart
                     }
                     
                 }
+
+                if(RunTotal > 50) //checking to see if customer gets free shipping
+                {
+                    Console.WriteLine("\nCart Total   : " + "$" + RunTotal);
+                    Console.WriteLine("Shipping Cost: " + "Free on orders over $50");
+                    Console.WriteLine("Grand Total  : " + "$" + RunTotal);
+
+                }
+                else{
+                    Console.WriteLine("\nCart Total   : " + "$" + RunTotal);
+                    Console.WriteLine("Shipping Cost: " + "$4.99");
+                    decimal Grandtotal = RunTotal + 4.99m;
+                    Console.WriteLine("Grand Total  : " + "$" + Grandtotal);
+                }
+
                 MenuSelection();
             }    
+        }
+
+        static bool IsProductInCart(Product TestProduct) //checks to see if a product is in a users cart
+        {
+            using (var db = new ShopDbContext())
+            {
+                
+                try{ //checks to see if product is in cart, if it isn't it'll throw an exception
+                    var d = db.CxCart.Where(c => c.Cart.CartID == Globals.CxLogedIn.Cart.CartID);
+                    var e = d.Where(t => t.Product == TestProduct).First();
+                    Console.WriteLine("=>> " + TestProduct.ProductID + "  vs  " + e.ProductID); //for testing.  Sees if it is checking like data and giving proper return
+                    return true;
+                }   
+                catch{
+                    return false;
+                }
+
+            }
+
         }
 
         //adds product to users cart
@@ -238,19 +275,30 @@ namespace ShopList
                     using (var db = new ShopDbContext()) //inputs data into database
                         {
                             var StuffToAdd = db.Products.Where(i => i.ProductID == ProductToAdd).First();
-                            Console.WriteLine(StuffToAdd);
-                            //Console.WriteLine("==========" + Globals.CxLogedIn + "=============="); for error testing
-                            CxCart NewProduct = new CxCart{CartID = Globals.CxLogedIn.Cart.CartID, ProductID = StuffToAdd.ProductID, Quantity = 1};
 
-                            db.Add(NewProduct);
-                            db.SaveChanges();
+                            if (IsProductInCart(StuffToAdd)) //if the product is already in the users cart this updates the quantity
+                            {
+                                var QuantUpdate = db.CxCart.Where(x => x.ProductID == StuffToAdd.ProductID && x.CartID == Globals.CxLogedIn.Cart.CartID).First(); //selects entry to be updated
+                                
+                                QuantUpdate.Quantity++;// add one to quantity if user ads item twice
+                                db.SaveChanges();
+                            }
+                            else //if it is a new product this adds it
+                            {
+                                //Console.WriteLine(StuffToAdd); //for error testing
+                                //Console.WriteLine("==========" + Globals.CxLogedIn + "=============="); //for error testing
+                                CxCart NewProduct = new CxCart{CartID = Globals.CxLogedIn.Cart.CartID, ProductID = StuffToAdd.ProductID, Quantity = 1};
+
+                                db.Add(NewProduct);
+                                db.SaveChanges();
+                            }
 
                             MenuSelection();
                         }
                     
                 }
 
-                 catch{
+                  catch{
                     Console.WriteLine("sorry that is not a valid product, please try again");
                     AddToCart();
                 }
