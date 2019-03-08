@@ -18,7 +18,7 @@ namespace ShopList
             //============================Ensure Database is created==============================
             using (var db = new ShopDbContext())
             {
-               db.Database.EnsureDeleted(); // for testing
+               //db.Database.EnsureDeleted(); // for testing
 
                 db.Database.EnsureCreated();
          
@@ -40,7 +40,7 @@ namespace ShopList
                 new Product { Description = "Kingdom Hearts III (Platform: PlayStation 4)", Price = 59.99M }
                 };
 
-                db.AddRange(products);
+                //db.AddRange(products);
 
                 db.SaveChanges();
             }
@@ -55,7 +55,7 @@ namespace ShopList
             {
 
                 Console.WriteLine("\n\nWelcome to the Super Mega Ultra Store 9000" + "\n"); 
-                
+
                 MenuSelection();
             }
             else //if the user doesn't exist ask them if they want to make a new account and if they don't exit them from the app
@@ -95,9 +95,14 @@ namespace ShopList
             {
                 try //finding out if the user is in there or not
                 {
-                    Customer FindUser = db.Customers.Where(p => p.Email == UsrName).First();
+                    
+                    Customer FindUser = db.Customers.Include(c => c.Cart).Where(p => p.Email == UsrName).First();
+
+                    //Console.WriteLine("=>>" + FindUser.Cart); error testing
                     
                     Globals.CxLogedIn = FindUser;
+
+                    //Console.WriteLine("=>>>" + Globals.CxLogedIn.Cart); error testing
 
                     Console.WriteLine($"\n\nWelcome Back " + Globals.CxLogedIn.FirstName);
 
@@ -151,30 +156,30 @@ namespace ShopList
             switch(UsrIn)
                 {
                     case 1:
-                            Console.Clear();
-                            Console.WriteLine("\n\n\n==================================\n\n");
-                            //list all products
-                            ListProducts();
-                            break;
-                        case 2:
-                            //list all products in cart
-                            ListCart();
-                            break;
-                        case 3:
+                        Console.Clear();
+                        Console.WriteLine("\n\n\n==================================\n\n");
+                        //list all products
+                        ListProducts();
+                        break;
+                    case 2:
+                        //list all products in cart
+                        ListCart();
+                        break;
+                    case 3:
                         //Add product to cart
-                            AddToCart();
-                         
-                            break;
-                        case 4:
-                            //remove a product from cart
-                            break;
-                        case 5:
-                            Console.WriteLine("See you next time");
-                            System.Environment.Exit(1);
-                            break;
-                        default:
-                            System.Environment.Exit(1);
-                            break;
+                        AddToCart();
+                        
+                        break;
+                    case 4:
+                        //remove a product from cart
+                        break;
+                    case 5:
+                        Console.WriteLine("See you next time");
+                        System.Environment.Exit(1);
+                        break;
+                    default:
+                        System.Environment.Exit(1);
+                        break;
                 }
             }
             catch
@@ -205,15 +210,20 @@ namespace ShopList
         {
             using(var db = new ShopDbContext())
             {
-                foreach(var d in db.CxCart.Where(c => c.CartID == Globals.CxLogedIn.Cart.CartID)) //list all items in cart
+                Console.WriteLine("Items Currently in Cart \n");
+                //Console.WriteLine("==========" + Globals.CxLogedIn + "=============="); for error testing
+                //Console.WriteLine("=>>>" + Globals.CxLogedIn.Cart); for error testing
+                foreach(var d in db.CxCart.Where(c => c.Cart.CartID == Globals.CxLogedIn.Cart.CartID)) //list all items in cart
                 {
+                    //Console.WriteLine("=>>>>" + d.CartID); for error testing
                     Console.Write("\tQuantity: " + d + "\t - ");
                     foreach(var p in db.Products.Where(x => x.ProductID == d.ProductID))
                     {
-                        Console.WriteLine(p.Description + "  " + p.Price);
+                        Console.WriteLine("$" + p.Price + "  " + p.Description);
                     }
                     
                 }
+                MenuSelection();
             }    
         }
 
@@ -224,16 +234,13 @@ namespace ShopList
                 try{
                     Console.WriteLine("Which product would you like to add? (please specify product ID)");
                     ProductToAdd = Convert.ToInt32(Console.ReadLine()); //has user select a product
-                    
-                    Console.WriteLine("How many would you like?");
-                    int QuantityToAdd = Convert.ToInt32(Console.ReadLine()); //asks user how many they would like to add
 
                     using (var db = new ShopDbContext()) //inputs data into database
                         {
                             var StuffToAdd = db.Products.Where(i => i.ProductID == ProductToAdd).First();
                             Console.WriteLine(StuffToAdd);
-                            Console.WriteLine(Globals.CxLogedIn);
-                            CxCart NewProduct = new CxCart{CartID = Globals.CxLogedIn.Cart.CartID, ProductID = StuffToAdd.ProductID, Quantity = QuantityToAdd};
+                            //Console.WriteLine("==========" + Globals.CxLogedIn + "=============="); for error testing
+                            CxCart NewProduct = new CxCart{CartID = Globals.CxLogedIn.Cart.CartID, ProductID = StuffToAdd.ProductID, Quantity = 1};
 
                             db.Add(NewProduct);
                             db.SaveChanges();
