@@ -320,11 +320,11 @@ namespace ShopList
         {
             int ProdIDForRemoval = 0;
             Console.WriteLine("Which product would you like to remove? (specify product ID in cart)");
-            ProdIDForRemoval = Convert.ToInt32(Console.ReadLine());
+            ProdIDForRemoval = Convert.ToInt32(Console.ReadLine()); //user selects item ID to remove from their cart
            
             using( var db = new ShopDbContext())
             {
-                try
+                try //validates user input
                 {
                     var ItemForRemoval = db.CxCart.Where(i => i.ProductID == ProdIDForRemoval && Globals.CxLogedIn.Cart.CartID == i.CartID).First();
                     
